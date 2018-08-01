@@ -1,0 +1,57 @@
+plugins {
+    id 'java'
+    id 'groovy'
+    id "io.spring.dependency-management" version "1.0.1.RELEASE"
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'groovy'
+
+    apply plugin: "io.spring.dependency-management"
+
+    group = 'org.randombits.proactive'
+    version = '0.1-SNAPSHOT'
+
+    sourceCompatibility = 10
+    targetCompatibility = 10
+
+    dependencyManagement {
+        imports {
+            mavenBom "io.projectreactor:reactor-bom:Bismuth-RELEASE"
+        }
+    }
+
+    dependencies {
+        testCompile "org.spockframework:spock-core:1.1-groovy-2.4-rc-2"
+        testRuntime "net.bytebuddy:byte-buddy:1.6.5"          // allows mocking of classes (in addition to interfaces)
+    }
+}
+
+project(':core') {
+    archivesBaseName = 'proactive-core'
+
+    dependencies {
+        compile 'org.reactivestreams:reactive-streams-flow-adapters:1.0.2'
+
+        testCompile 'io.projectreactor:reactor-core'            // TODO: remove requirement for this in testing.
+        testCompile "org.spockframework:spock-core:1.1-groovy-2.4-rc-2"
+        testRuntime "net.bytebuddy:byte-buddy:1.6.5"            // allows mocking of classes (in addition to interfaces)
+    }
+}
+
+project(':drivers:reactor3') {
+    archivesBaseName = 'proactive-reactor3'
+
+    dependencies {
+        compile project(':core')
+        compile 'io.projectreactor:reactor-core'
+    }
+}
