@@ -1,4 +1,4 @@
 rootProject.name = "proactive-java"
 
-include "core", "drivers:reactor3"
+include "core", "drivers:reactor3", "drivers:rxjava2"
 
